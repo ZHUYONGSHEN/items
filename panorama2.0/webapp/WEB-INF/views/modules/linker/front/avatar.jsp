@@ -1,0 +1,214 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/include/taglib.jsp"%>
+<html>
+<head>
+<meta name="decorator" content="admin"/>
+	<meta name="viewport" content="width=device-width">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+	<meta name='apple-mobile-web-app-capable' content='yes' />
+	<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+	<meta content="telephone=yes" name="format-detection" />
+	<meta name="x5-fullscreen" content="true">
+	<meta name="full-screen" content="yes">
+	<title>一起代言"广州车展"</title>
+	<style>
+		#loading {
+			position: fixed;
+			left:0;
+			right:0;
+			top:0;
+			bottom:0;
+			z-index: 99999;
+			display: none;
+			width: 100vw;
+			height: 100vh;
+			background: rgba(0,0,0, .6);
+		}
+		#loading i {
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 50%;
+			margin-top: -0.5rem;
+			z-index: 9999;
+			font-size: .4rem;
+			text-indent: -9999em;
+			overflow: hidden;
+			width: 1em;
+			height: 1em;
+			border-radius: 50%;
+			margin: 0.8em auto;
+			-webkit-animation: load6 1.7s infinite ease;
+			animation: load6 1.7s infinite ease;
+		}
+		.loader--spinningDisc {
+			content: '';
+			top: 0;
+		}
+		@-webkit-keyframes load6 {
+			0% {
+				-webkit-transform: rotate(0deg);
+				transform: rotate(0deg);
+				box-shadow: -0.11em -0.83em 0 -0.4em #ffffff, -0.11em -0.83em 0 -0.42em #ffffff, -0.11em -0.83em 0 -0.44em #ffffff, -0.11em -0.83em 0 -0.46em #ffffff, -0.11em -0.83em 0 -0.477em #ffffff;
+			}
+			5%,
+			95% {
+				box-shadow: -0.11em -0.83em 0 -0.4em #ffffff, -0.11em -0.83em 0 -0.42em #ffffff, -0.11em -0.83em 0 -0.44em #ffffff, -0.11em -0.83em 0 -0.46em #ffffff, -0.11em -0.83em 0 -0.477em #ffffff;
+			}
+			30% {
+				box-shadow: -0.11em -0.83em 0 -0.4em #ffffff, -0.51em -0.66em 0 -0.42em #ffffff, -0.75em -0.36em 0 -0.44em #ffffff, -0.83em -0.03em 0 -0.46em #ffffff, -0.81em 0.21em 0 -0.477em #ffffff;
+			}
+			55% {
+				box-shadow: -0.11em -0.83em 0 -0.4em #ffffff, -0.29em -0.78em 0 -0.42em #ffffff, -0.43em -0.72em 0 -0.44em #ffffff, -0.52em -0.65em 0 -0.46em #ffffff, -0.57em -0.61em 0 -0.477em #ffffff;
+			}
+			100% {
+				-webkit-transform: rotate(360deg);
+				transform: rotate(360deg);
+				box-shadow: -0.11em -0.83em 0 -0.4em #ffffff, -0.11em -0.83em 0 -0.42em #ffffff, -0.11em -0.83em 0 -0.44em #ffffff, -0.11em -0.83em 0 -0.46em #ffffff, -0.11em -0.83em 0 -0.477em #ffffff;
+			}
+		}
+		@keyframes load6 {
+			0% {
+				-webkit-transform: rotate(0deg);
+				transform: rotate(0deg);
+				box-shadow: -0.11em -0.83em 0 -0.4em #ffffff, -0.11em -0.83em 0 -0.42em #ffffff, -0.11em -0.83em 0 -0.44em #ffffff, -0.11em -0.83em 0 -0.46em #ffffff, -0.11em -0.83em 0 -0.477em #ffffff;
+			}
+			5%,
+			95% {
+				box-shadow: -0.11em -0.83em 0 -0.4em #ffffff, -0.11em -0.83em 0 -0.42em #ffffff, -0.11em -0.83em 0 -0.44em #ffffff, -0.11em -0.83em 0 -0.46em #ffffff, -0.11em -0.83em 0 -0.477em #ffffff;
+			}
+			30% {
+				box-shadow: -0.11em -0.83em 0 -0.4em #ffffff, -0.51em -0.66em 0 -0.42em #ffffff, -0.75em -0.36em 0 -0.44em #ffffff, -0.83em -0.03em 0 -0.46em #ffffff, -0.81em 0.21em 0 -0.477em #ffffff;
+			}
+			55% {
+				box-shadow: -0.11em -0.83em 0 -0.4em #ffffff, -0.29em -0.78em 0 -0.42em #ffffff, -0.43em -0.72em 0 -0.44em #ffffff, -0.52em -0.65em 0 -0.46em #ffffff, -0.57em -0.61em 0 -0.477em #ffffff;
+			}
+			100% {
+				-webkit-transform: rotate(360deg);
+				transform: rotate(360deg);
+				box-shadow: -0.11em -0.83em 0 -0.4em #ffffff, -0.11em -0.83em 0 -0.42em #ffffff, -0.11em -0.83em 0 -0.44em #ffffff, -0.11em -0.83em 0 -0.46em #ffffff, -0.11em -0.83em 0 -0.477em #ffffff;
+			}
+		}
+
+	</style>
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://release.720.hiweixiao.com/SpecialConnector/css/common.css">
+	<script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                //判断窗口有没有orientationchange这个方法，有就赋值给一个变量，没有就返回resize方法。
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    //把document的fontSize大小设置成跟窗口成一定比例的大小，从而实现响应式效果。
+                    docEl.style.fontSize = 42.6667 * (clientWidth / 320) + 'px';
+                };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false)
+        })(document, window);
+	</script>
+</head>
+<body style="background:#f6fafb">
+	<div class="p_30">
+	<p class="text_center color_222323 p_b20 fz32">&nbsp;</p>
+	<p class="text_center color_222323 p_b20 fz32">已有<span id="num" class="color_fa5c5c">0</span>位代言人</p>
+	<p class="text_center color_222323 p_b20 fz32" id="avtertx"></p>
+	<p class="text_center color_222323 p_b20 fz32">&nbsp;</p>
+	<div class="clear" id="imgtx">
+
+	</div>
+	<p id="clickmore" class="fz32" style=" padding: 0.1rem 0; text-align:center;background:#00ccff;line-height:0.4rem;color:#fff;border-radius:5px">查看更多</p>
+	</div>
+	<div id="loading">
+		<i class="loader--spinningDisc"></i>
+	</div>
+	<script src="//cdn.bootcss.com/jquery/2.2.2/jquery.min.js"></script>
+<script>
+	var cache = [], page = 1, num = 20;
+	/*
+	* page 页码
+	* url 地址
+	* boole true（获取前page页的所有数据）/false（获取当前page页的所有数据）
+	* */
+	function setPage(page, url, boole, num) {
+	    var _load = $('#loading'), _str = '', _main = $('#imgtx');
+		$.ajax({
+            type:'get',
+			url: url,
+            dataType: 'json',
+            beforeSend: function(){
+                _load.fadeIn(300);
+            },
+            success: function(data){
+                _load.fadeIn(300);
+                if (boole){
+                    if (typeof (cache[page]) == 'undefined'){
+                        for(var i = 0; i< page; i++){
+                            _str+='<a href="'+data[i]+'" class="avatar_img fl" style="background-image: url('+data[i]+')"></a>'
+                            cache[i] = data[i];
+						}
+                        _main.appendChild(_str);
+
+                    } else {
+                        for(var i = 0; i< cache.length-1; i++){
+                            _str+='<a href="'+cache[i]+'" class="avatar_img fl" style="background-image: url('+cache[i]+')"></a>'
+                        }
+                        _main.appendChild(_str);
+					}
+				} else {
+                    if (typeof (cache[page]) == 'undefined'){
+                        for(var i = (page-1)*num; i< page*num; i++){
+                            _str+='<a href="'+data[i]+'" class="avatar_img fl" style="background-image: url('+data[i]+')"></a>'
+                            cache[i] = data[i];
+                        }
+                        _main.appendChild(_str);
+
+                    } else {
+                        for(var i = (page-1)*num; i< page*num; i++){
+                            _str+='<a href="'+cache[i]+'" class="avatar_img fl" style="background-image: url('+cache[i]+')"></a>'
+                        }
+                        _main.appendChild(_str);
+                    }
+				}
+				++page;
+            },
+            complete: function(){
+                $('#loading').fadeOut(300);
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    }
+    $('#clickmore').on('click',function () {
+        setPage(1,'www.baidu.com', false, 20);
+    });
+
+/*function loadimg(){
+	$.ajax({
+		type:'get',
+		url:baseparam.baseurl+'/Connector/Activity/getAll',
+		data:{
+			page:page,
+			type:getUrlParam('type')
+		},
+		success:function(res){
+			if(res){
+			    $('#num').text(Number(res[0].baseNum)+Number(res[0].total))
+				page++;
+				var imgtx=''
+				for(var i=0;i<res.length;i++){
+					imgtx+='<a href="'+res[i].url+'" class="avatar_img fl" style="background-image: url('+res[i].picture+')"></a>'
+				}
+				$('#imgtx').append(imgtx)
+			}
+		}
+	})
+}*/
+</script>
+</body>
+</html>

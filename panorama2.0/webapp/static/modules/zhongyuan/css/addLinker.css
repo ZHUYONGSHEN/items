@@ -1,0 +1,33 @@
+.main{
+    width:1200px;
+    margin:0 auto;
+}
+.right-content{
+    width:1005px;
+    float:right;
+}
+.cont-tit{
+    margin-top:20px;
+    width:140px;
+    height:32px;
+    line-height:32px;
+    font-size:18px;
+    text-align: center;
+    background: #cccccc;
+}
+.info-form{
+    border:1px solid #ddd;
+    padding-top:20px;
+    padding-bottom:30px;
+}
+.red-item {
+    color: #f80040;
+    margin-right: 3px;
+}
+.info-form .control-label{
+    white-space: pre;
+    width:130px;;
+}
+.info-form .controls{
+    margin-left:140px;;
+}

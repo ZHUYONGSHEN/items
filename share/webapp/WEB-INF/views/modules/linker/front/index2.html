@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+	<meta name='apple-mobile-web-app-capable' content='yes' />
+	<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+	<meta content="telephone=yes" name="format-detection" />
+	<meta name="x5-fullscreen" content="true">
+	<meta name="full-screen" content="yes">
+	<title></title>
+	<link rel="stylesheet" href="../css/common.css">
+	<link rel="stylesheet" href="http://720.zooming-data.com/css/main.css">
+	<link rel="stylesheet" href="http://720.zooming-data.com/js/lib/bootstrap-3.3.6/dist/css/bootstrap.min.css">
+	<link href="http://720.zooming-data.com/css/pano.css">
+	<script type="text/javascript" src="../js/jquery.min.2.2.2.js"></script>
+	<script src="../js/common.js"></script>
+	<script src="http://cdn.szzunhao.com/hongbao/js/jweixin-1.0.0.js" type="text/javascript"></script>
+	<script src="../js/common-share.js"></script>
+</head>
+<body style="background:#000;">
+<article class="banner_right">
+	<div id="headimg" class="headimg"></div>
+	<p class="headtx" id="headtx"></p>
+	<a class="icon-div" id="icon_details">
+		<span class="icon icon_detail"></span>
+		<p>活动详情</p>
+	</a>
+	<a class="icon-div" id="icon_finger">
+		<span class="icon icon_finger"></span>
+		<p>一起代言</p>
+	</a>
+	<a class="icon-div" id="icon_more">
+		<span class="icon icon_more"></span>
+		<p>更多精彩</p>
+	</a>
+</article>
+<article class="desin-left">
+	<img src="../images/like_num_img.png" id="like_click_img" width="30" style="opacity:0;z-index:-1;position:absolute;top:0;left:0">
+	<img id="like_click" class="mb05" src="../images/like_num_on.png" width="30">
+	<p id="like_num" style="text-shadow: 2px 0px 5px #000">0</p>
+</article>
+<div id="bg" style="display:none"></div>
+<div id="banner" style="display:none" class="common-banner">
+	<div style="position:relative;height: 100%">
+		<img class="colse design-colse" src="../images/design_clock.png">
+		<img src="" id="banersimg" width="100%"/>
+	</div>
+</div>
+
+<div id="container" style="width: 100vw;height: 100vh;"></div>
+<audio id="point-muisc-player" preload="none"></audio>
+<div id="display-point-info-mdl" class="modal alertimg" role="dialog" aria-labelledby="pointInfo"></div>
+<script src="http://720.zooming-data.com/js/pano_api.js"></script>
+<script src="http://720.zooming-data.com/js/lib/circle-progress.js"></script>
+<script>
+//15118164793
+var lick_time;
+var  HOST_URL = "http://720.zooming-data.com";
+var mobiles= getUrlParam('image_id')
+var typex = getUrlParam('type');
+var pano
+var likeif=true
+
+
+$.ajax({
+	type:'get',
+	url:baseparam.baseurl+'/Connector/Activity/getHomeDetail',
+	data:{
+		type:typex
+	},
+	success:function(res){
+		if(res.data[0]){
+			if (getUrlParam('action') =='redirect') {
+				sessionStorage.setItem("imgkey", 1);
+				$('#banner').show()
+				$('#bg').show()
+			} else {
+				$('#banner').hide()
+				$('#bg').hide()
+			}
+			$('#banersimg').attr('src',res.data[0].adImg)
+			var $body = $('body');
+			document.title = res.data[0].indexTitle
+			// hack在微信等webview中无法修改document.title的情况
+			var $iframe = $('<iframe src="/favicon.ico"></iframe>').on('load', function(){
+				setTimeout(function(){
+					$iframe.off('load').remove()
+				}, 0)
+			}).appendTo($body)
+			pano = CreatePanorama("container",res.data[0].streetURL.split('/')[4].split('#')[0])
+			var s = res.data[0].streetURL.split('/')[4].split('id=')[1].replace('/[^0-9]/g','');
+			pano.setActiveScene(parseInt(s))
+			pano.run();
+			$('#icon_details').attr('href','details.html?image_id='+mobiles+'&type='+typex+'&oppenid='+getUrlParam('oppenid'))
+			$('#icon_finger').attr('href','avatar.html?image_id='+mobiles+'&type='+typex+'&oppenid='+getUrlParam('oppenid'))
+			getlike()
+			if(!res.data[0].moreMsg){
+				$('#icon_more').attr('href',res.data[0].moreMsg)
+			}else{
+				$('#icon_more').attr('href','../more.html?image_id='+mobiles+'&type='+typex+'&oppenid='+getUrlParam('oppenid'))
+			}
+			$('body').on('click','.group-bar div',function(){
+				$('.ul-box').find('img')[0].click()
+				getlike()
+				likeif=true
+				$('#like_click').attr('src','../images/like_num_on.png')
+			})
+			$('.ul-box').off().on('click','img',function(){
+				$('#like_click_img').removeClass('lick_click_antime')
+				setTimeout(getlike,200)
+				likeif=true
+				$('#like_click').attr('src','../images/like_num_on.png')
+			})
+
+		}
+	}
+})
+
+function getlike(){
+	$.ajax({
+		type:'get',
+		url:baseparam.baseurl+'/Connector/Activity/getLikeNum',
+		data:{
+			id:pano.getActiveSceneId()
+		},
+		success:function(res){
+			if(res.status){
+				$('#like_num').text(parseInt(res.like_num))
+			}
+		}
+	})
+}
+
+
+
+$('#like_click').click(function(){
+	if(likeif){
+		$.ajax({
+			type:'post',
+			url:baseparam.baseurl+'/Connector/Activity/clickScene',
+			data:{
+				id:pano.getActiveSceneId()
+			},
+			success:function(res){
+				if(res.status){
+				$('#like_num').text(parseInt(res.like_num))
+					likeif= false
+					$('#like_click').attr('src','../images/like_num_click.png')
+					$('#like_click_img').addClass('lick_click_antime')
+
+				}
+			}
+		})
+	}
+})
+$.ajax({
+	type:'get',
+	ansny:true,
+	url:baseparam.baseurl+'/Connector/Activity/getAvatar',
+	data:{
+		id:mobiles,
+		type:typex
+	},
+	success:function(res){
+		$('#headimg').css('background-image','url('+res.picture+')')
+		$('#headtx').text(res.nickname)
+	}
+})
+
+$('#bg').click(function(){
+	$('#banner').hide()
+	$('#bg').hide()
+})
+$('.colse').click(function(){
+	$('#banner').hide()
+	$('#bg').hide()
+})
+</script>
+
+</body>
+</html>
